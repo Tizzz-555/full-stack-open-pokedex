@@ -23,12 +23,11 @@ primary_region = 'sin'
   processes = ["app"]
 
 [http_service.checks]
-    [http_service.checks.health]
-      grace_period = "10s"
-      interval = "30s"
-      method = "GET"
-      timeout = "5s"
-      path = "/health"
+  grace_period = "10s"
+  interval = "30s"
+  method = "GET"
+  timeout = "5s"
+  path = "/health"
 
 [[vm]]
   memory = '1gb'

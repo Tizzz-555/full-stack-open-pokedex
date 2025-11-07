@@ -24,12 +24,6 @@ jobs:
       - run: npm ci
       - run: npm run eslint
       - run: npm run test
-      - name: Debug webhook URL
-        run: |
-          echo "Webhook URL length: ${#DISCORD_WEBHOOK}"
-          echo "First 30 chars: ${DISCORD_WEBHOOK:0:30}"
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       # - run: npm run build
       # - name: Install Playwright Browsers
       #   run: npx playwright install --with-deps
@@ -48,27 +42,23 @@ jobs:
       #   if: ${{ env.SHOULD_DEPLOY == 'true' }}
       #   env:
       #     FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-      - if: ${{ success() }}
-        name: Discord Webhook Notify (Success)
-        uses: rjstone/discord-webhook-notify@v2.2.1
+      - name: Discord Webhook Notify (Success)
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ success() }}
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: 'Deployment Bot'
-          avatarUrl: 'https://github.com/github.png'
-          severity: 'info'
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
           title: 'A new version of Pokedex has been deployed'
-          text: to https://full-stack-open-pokedex-billowing-breeze-4348.fly.dev by ${{ github.actor }}
+          description: 'to https://full-stack-open-pokedex-billowing-breeze-4348.fly.dev by ${{ github.actor }}'
+          color: 0x00ff00
 
-      - if: ${{ failure() }}
-        name: Discord Webhook Notify (Failure)
-        uses: rjstone/discord-webhook-notify@v2.2.1
+      - name: Discord Webhook Notify (Failure)
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ failure() }}
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: 'Deployment Bot'
-          avatarUrl: 'https://github.com/github.png'
-          severity: 'error'
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
           title: 'Build failed'
-          text: Commit ${{ github.sha }} by ${{ github.actor }} broke the build :(
+          description: 'Commit ${{ github.sha }} by ${{ github.actor }} broke the build :('
+          color: 0xff0000
 
   tag_release:
     needs: [simple_deployment_pipeline]

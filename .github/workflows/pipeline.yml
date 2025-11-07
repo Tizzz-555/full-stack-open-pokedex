@@ -24,6 +24,12 @@ jobs:
       - run: npm ci
       - run: npm run eslint
       - run: npm run test
+      - name: Debug webhook URL
+        run: |
+          echo "Webhook URL length: ${#DISCORD_WEBHOOK}"
+          echo "First 30 chars: ${DISCORD_WEBHOOK:0:30}"
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       # - run: npm run build
       # - name: Install Playwright Browsers
       #   run: npx playwright install --with-deps

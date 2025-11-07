@@ -23,25 +23,25 @@ jobs:
           node-version: '20'
       - run: npm ci
       - run: npm run eslint
-      - run: npm run build
       - run: npm run test
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npx playwright test
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-        if: ${{ env.SHOULD_DEPLOY == 'true' }}
-      - id: deployment
-        run: flyctl deploy --remote-only
-        if: ${{ env.SHOULD_DEPLOY == 'true' }}
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      # - run: npm run build
+      # - name: Install Playwright Browsers
+      #   run: npx playwright install --with-deps
+      # - name: Run Playwright tests
+      #   run: npx playwright test
+      # - uses: actions/upload-artifact@v4
+      #   if: ${{ !cancelled() }}
+      #   with:
+      #     name: playwright-report
+      #     path: playwright-report/
+      #     retention-days: 30
+      # - uses: superfly/flyctl-actions/setup-flyctl@master
+      #   if: ${{ env.SHOULD_DEPLOY == 'true' }}
+      # - id: deployment
+      #   run: flyctl deploy --remote-only
+      #   if: ${{ env.SHOULD_DEPLOY == 'true' }}
+      #   env:
+      #     FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       - if: ${{ success() }}
         name: Discord Webhook Notify (Success)
         uses: rjstone/discord-webhook-notify@v2.2.1

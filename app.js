@@ -4,13 +4,7 @@ const app = express()
 // get the port from env variable
 const PORT = process.env.PORT || 5000
 
-// Simulate production error for health check testing
-app.use((req, res, next) => {
-  if (process.env.NODE_ENV === 'production') {
-    return res.status(500).send('Server Error - Production failure simulation')
-  }
-  next()
-})
+const shouldFailHealthCheck = process.env.FAIL_HEALTH_CHECK === 'true'
 
 app.use(express.static('dist'))
 
@@ -24,5 +18,9 @@ app.get('/version', (req, res) => {
 })
 
 app.get('/health', (req, res) => {
+  if (shouldFailHealthCheck) {
+    return res.status(500).json({ status: 'fail', reason: 'Forced health check failure' })
+  }
+
   res.send('ok')
 })

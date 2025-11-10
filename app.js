@@ -6,6 +6,14 @@ const PORT = process.env.PORT || 5000
 
 app.use(express.static('dist'))
 
+// Simulate production error for health check testing
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(500).send('Server Error - Production failure simulation')
+  }
+  next()
+})
+
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`server started on port ${PORT}`)
